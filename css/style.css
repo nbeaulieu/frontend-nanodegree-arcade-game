@@ -1,3 +1,8 @@
 body {
     text-align: center;
+    background-color: #505050; /* Matches color of tile borders in background. */
+}
+
+canvas {
+    /* border: solid 4px rgb(0, 0, 0); */
 }

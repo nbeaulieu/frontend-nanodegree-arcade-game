@@ -33,6 +33,7 @@ var Engine = (function(global) {
      * and handles properly calling the update and render methods.
      */
     function main() {
+        console.log("engine.main");
         /* Get our time delta information which is required if your game
          * requires smooth animation. Because everyone's computer processes
          * instructions at different speeds we need a constant value that
@@ -64,6 +65,7 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
+        console.log("engine.init");
         reset();
         lastTime = Date.now();
         main();
