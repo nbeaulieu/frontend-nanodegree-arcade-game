@@ -15,13 +15,36 @@ Van.prototype.grab = function() {}
 */
 
 // Enemies our player must avoid
-var Enemy = function() {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
+var Enemy = function(alias) {
 
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';
+    // Get the character by alias name.
+    var enemy = GameAssets.getEnemy(alias);
+
+    if (enemy != null) {
+        // The image/sprite for our enemies, this uses
+        // a helper we've provided to easily load images
+        this.sprite = enemy.image;
+
+        // The x and y coordinates are grid offsets.  The delta x and y coordinates
+        // provide usable width and height information for each tile and provide
+        // the placement information for the character within the grid system.
+        this.speedMin = enemy.speedMin;
+        this.speedMax = enemy.speedMax;
+        this.x = 0;
+        
+        // Get a random value betwen min and max.  Adjust to make the range inclusive on the high end.
+        var randomRow = Math.floor(Math.random () * (enemy.maxRow - enemy.minRow + 1)) +  enemy.minRow;
+        console.log("enemy random row: " , randomRow);
+        // Set the enemy y offset based on tile height.
+        this.y = randomRow * GameAssets.getTileHeight();
+    }
+    else {
+        this.sprite = "";
+        this.speedMin = 10;
+        this.speedMax = 10;
+        this.x = 0;
+        this.y = 0;
+    }
 }
 
 // Update the enemy's position, required method for game
@@ -34,7 +57,6 @@ Enemy.prototype.update = function(dt) {
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-    this.x = 100; this.y = 100;
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
@@ -42,11 +64,12 @@ Enemy.prototype.render = function() {
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function(alias) {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
+
+    // Get the character by alias name.
     var character = GameAssets.getCharacter(alias);
 
     if (character != null) {
+        // Assign the sprite name.
         this.sprite = character.image;
         // The x and y coordinates are grid offsets.  The delta x and y coordinates
         // provide usable width and height information for each tile and provide
@@ -117,7 +140,7 @@ Player.prototype.render = function() {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 var allEnemies = new Array();
-allEnemies.push(new Enemy);
+allEnemies.push(new Enemy("enemy-bug"));
 
 // Place the player object in a variable called player
 

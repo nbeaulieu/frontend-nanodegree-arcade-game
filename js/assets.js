@@ -14,6 +14,9 @@ var GameAssets = {
     "characters": [
         { "alias": "boy", "image": "images/char-boy.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 83 },
     ],
+    "enemies": [
+        { "alias": "enemy-bug", "image": "images/enemy-bug.png", "minRow":1, "maxRow":3, "speedMin":10, "speedMax": 40 },
+    ],
     "awards": [
         { "alias": "blue-gem", "image": "images/Gem Blue.png", "startX":0, "startY":0 },
         { "alias": "green-gem", "image": "images/Gem Green.png", "startX":0, "startY":0 },
@@ -55,6 +58,18 @@ GameAssets.getCharacter = function(alias) {
         }
     }
     console.log("GameAssets.getCharacter, Unable to find character by alias: ", alias)
+    return null;
+}
+
+GameAssets.getEnemy = function(alias) {
+
+    for(var asset in GameAssets.enemies) {
+        if (GameAssets.enemies[asset].alias == alias) {
+            console.log(GameAssets.enemies[asset]);
+            return GameAssets.enemies[asset];
+        }
+    }
+    console.log("GameAssets.getCharacter, Unable to find enemy by alias: ", alias)
     return null;
 }
 
