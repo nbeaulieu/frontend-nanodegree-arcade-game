@@ -167,8 +167,8 @@ var Engine = (function(global) {
     // In future iterations, consider updating the loading method to accept
     // the json objects directly.
     var assetArray = new Array();
-    for(var asset in GameAssets.level) {
-        assetArray.push(GameAssets.level[asset].image);
+    for(var asset in GameAssets.tiles) {
+        assetArray.push(GameAssets.tiles[asset].image);
     }
     for(var asset in GameAssets.characters) {
         assetArray.push(GameAssets.characters[asset].image);

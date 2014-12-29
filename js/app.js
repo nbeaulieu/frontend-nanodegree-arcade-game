@@ -34,20 +34,35 @@ Enemy.prototype.update = function(dt) {
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
+    this.x = 100; this.y = 100;
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
-var Player = function() {
+var Player = function(alias) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
+    var character = GameAssets.getCharacter(alias);
 
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
-    this.sprite = 'images/char-boy.png';
-//    this.sprite = 'images/char-cat-girl.png';
+    if (character != null) {
+        this.sprite = character.image;
+        // The x and y coordinates are grid offsets.  The delta x and y coordinates
+        // provide usable width and height information for each tile and provide
+        // the placement information for the character within the grid system.
+        this.deltaX = character.deltaX;
+        this.deltaY = character.deltaY;
+        this.x = character.startX * this.deltaX;
+        this.y = character.startY * this.deltaY;
+    }
+    else {
+        this.sprite = "";
+        this.deltaX = 0;
+        this.deltaY = 0;
+        this.x = 0;
+        this.y = 0;
+    }
 }
 
 // Update the players's position, required method for game
@@ -58,9 +73,44 @@ Player.prototype.update = function(dt) {
     // all computers.
 }
 
+// Update the players's position, required method for game
+Player.prototype.handleInput = function(keyCode) {
+    // You should multiply any movement by the dt parameter
+    // which will ensure the game runs at the same speed for
+    // all computers.
+    if (keyCode == "up") {
+        this.y = this.y - this.deltaY;
+    } else if (keyCode == "down") {
+        this.y = this.y + this.deltaY;
+    } else if (keyCode == "right") {
+        this.x = this.x + this.deltaX;
+    } else if (keyCode == "left") {
+        this.x = this.x - this.deltaX;
+    }
+    
+    // Make sure that the character doesn't run off of the screen.
+    if (this.x < 0) {
+        this.x = 0;
+    }
+    // Moving in the x direction moves the character to the next column.
+    // Calculations are performed on 0-based column indices, thus the - 1.
+    else if (this.x > ((GameAssets.getColumns() - 1) * GameAssets.getTileWidth())) {
+        this.x = (GameAssets.getColumns() - 1) * GameAssets.getTileWidth();
+    }
+    
+    if (this.y < 0) {
+        this.y = 0;
+    }
+    // Moving in the y direction moves the character to the next row.
+    // Calculations are performed on 0-based row indices, thus the - 1.
+    else if (this.y > ((GameAssets.getRows() - 1) * GameAssets.getTileHeight())) {
+        this.y = (GameAssets.getRows() - 1) * GameAssets.getTileHeight();
+    }
+}
+
 // Draw the player on the screen, required method for game
 Player.prototype.render = function() {
-    this.x = 0; this.y = 0;
+    //this.x = 0; this.y = 0;
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
@@ -71,7 +121,7 @@ allEnemies.push(new Enemy);
 
 // Place the player object in a variable called player
 
-var player = new Player();
+var player = new Player("boy");
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
