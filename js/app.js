@@ -20,28 +20,59 @@ var Enemy = function(alias) {
     // Get the character by alias name.
     var enemy = GameAssets.getEnemy(alias);
 
-    if (enemy != null) {
+    // Configure the enemy!
+    this.configure(enemy);
+}
+
+// Calculates and returns a row for the enemy's travels.
+Enemy.prototype.configure = function(enemyAsset) {
+
+    // Store the object asset information for future use.
+    this.enemyAsset = enemyAsset;
+
+    if (this.enemyAsset != null) {
         // The image/sprite for our enemies, this uses
         // a helper we've provided to easily load images
-        this.sprite = enemy.image;
+        this.sprite = enemyAsset.image;
+        // Reset the enemy location and speed.  (This first time it's a set, not a reset).
+        this.reset();
+    }
+}
 
-        // The x and y coordinates are grid offsets.  The delta x and y coordinates
-        // provide usable width and height information for each tile and provide
-        // the placement information for the character within the grid system.
-        this.speedMin = enemy.speedMin;
-        this.speedMax = enemy.speedMax;
-        this.x = 0;
-        
-        // Get a random value betwen min and max.  Adjust to make the range inclusive on the high end.
-        var randomRow = Math.floor(Math.random () * (enemy.maxRow - enemy.minRow + 1)) +  enemy.minRow;
-        console.log("enemy random row: " , randomRow);
-        // Set the enemy y offset based on tile height.
-        this.y = randomRow * GameAssets.getTileHeight();
+// Calculates and returns a row for the enemy's travels.
+Enemy.prototype.resetX = function() {
+    // The enemies start off screen and move into play.
+    this.x = 0 - GameAssets.getTileWidth();
+}
+
+// Calculates and returns a row for the enemy's travels.
+Enemy.prototype.getRandomRow = function() {
+    // Get a random value betwen min and max.  Adjust to make the range inclusive on the max end.
+    return Math.floor(Math.random () * (this.enemyAsset.maxRow - this.enemyAsset.minRow + 1)) +  this.enemyAsset.minRow;
+}
+
+// Calculates and returns a speed for the enemy's movement.
+Enemy.prototype.getRandomSpeed = function() {
+    // Get a random speed between min and max.  Adjust to make the range inclusive on the max end.
+    return Math.floor(Math.random () * (this.enemyAsset.speedMax - this.enemyAsset.speedMin + 1)) +  this.enemyAsset.speedMin;
+}
+
+// Calculates and returns a row for the enemy's travels.
+Enemy.prototype.reset = function() {
+
+    if (this.enemyAsset != null) {
+        // The enemies start off screen and move into play.
+        this.resetX();
+        // Set the enemy y offset based on the random row and game tile height.
+        this.y = this.getRandomRow() * GameAssets.getTileHeight();
+        console.log("y: ", this.y);
+        // Get a random speed.
+        this.speed = this.getRandomSpeed();
+        console.log("this.speed: ", this.speed);
     }
     else {
         this.sprite = "";
-        this.speedMin = 10;
-        this.speedMax = 10;
+        this.speed = 20;
         this.x = 0;
         this.y = 0;
     }
@@ -53,6 +84,11 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    this.x = this.x + (this.speed * dt);
+    // If the enemy has moved off screen, reset it.
+    if (this.x > GameAssets.getTileWidth() * GameAssets.getColumns()) {
+        this.reset();
+    }
 }
 
 // Draw the enemy on the screen, required method for game

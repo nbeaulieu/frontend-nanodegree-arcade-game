@@ -15,7 +15,7 @@ var GameAssets = {
         { "alias": "boy", "image": "images/char-boy.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 83 },
     ],
     "enemies": [
-        { "alias": "enemy-bug", "image": "images/enemy-bug.png", "minRow":1, "maxRow":3, "speedMin":10, "speedMax": 40 },
+        { "alias": "enemy-bug", "image": "images/enemy-bug.png", "minRow":1, "maxRow":3, "speedMin":20, "speedMax": 60 },
     ],
     "awards": [
         { "alias": "blue-gem", "image": "images/Gem Blue.png", "startX":0, "startY":0 },
@@ -30,22 +30,22 @@ var GameAssets = {
 };
 
 GameAssets.getRows = function() {
-    console.log("GameAssets.getRows: ", GameAssets.level.totalRows);
+    //console.log("GameAssets.getRows: ", GameAssets.level.totalRows);
     return GameAssets.level.totalRows;
 }
 
 GameAssets.getColumns = function() {
-    console.log("GameAssets.getColumns: ", GameAssets.level.totalColumns);
+    //console.log("GameAssets.getColumns: ", GameAssets.level.totalColumns);
     return GameAssets.level.totalColumns;
 }
 
 GameAssets.getTileWidth = function() {
-    console.log("GameAssets.getTileWidth: ", GameAssets.level.tileWidth);
+    //console.log("GameAssets.getTileWidth: ", GameAssets.level.tileWidth);
     return GameAssets.level.tileWidth;
 }
 
 GameAssets.getTileHeight = function() {
-    console.log("GameAssets.getTileHeight: ", GameAssets.level.tileHeight);
+    //console.log("GameAssets.getTileHeight: ", GameAssets.level.tileHeight);
     return GameAssets.level.tileHeight;
 }
 
@@ -69,7 +69,7 @@ GameAssets.getEnemy = function(alias) {
             return GameAssets.enemies[asset];
         }
     }
-    console.log("GameAssets.getCharacter, Unable to find enemy by alias: ", alias)
+    console.log("GameAssets.getEnemy, Unable to find enemy by alias: ", alias)
     return null;
 }
 
