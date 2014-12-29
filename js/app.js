@@ -1,3 +1,19 @@
+/*
+ *var Car = function(loc) {
+    this.loc = loc;
+}
+Car.prototype.move = function() {
+    this.loc++;
+}
+
+var Van = function (loc) {
+    Car.call(this, loc);    
+}
+Van.prototype = Object.create(Car.prototype);
+Van.prototype.constructor = Van;
+Van.prototype.grab = function() {}
+*/
+
 // Enemies our player must avoid
 var Enemy = function() {
     // Variables applied to each of our instances go here,
@@ -18,7 +34,6 @@ Enemy.prototype.update = function(dt) {
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-    console.log("Enemy.prototype.render");
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
@@ -45,7 +60,6 @@ Player.prototype.update = function(dt) {
 
 // Draw the player on the screen, required method for game
 Player.prototype.render = function() {
-    console.log("Player.prototype.render");
     this.x = 0; this.y = 0;
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }

@@ -33,7 +33,6 @@ var Engine = (function(global) {
      * and handles properly calling the update and render methods.
      */
     function main() {
-        console.log("engine.main");
         /* Get our time delta information which is required if your game
          * requires smooth animation. Because everyone's computer processes
          * instructions at different speeds we need a constant value that
@@ -65,7 +64,6 @@ var Engine = (function(global) {
      * game loop.
      */
     function init() {
-        console.log("engine.init");
         reset();
         lastTime = Date.now();
         main();
@@ -165,17 +163,25 @@ var Engine = (function(global) {
         // noop
     }
 
+    // Build an array of assets to load from the asset list defined for the game.
+    // In future iterations, consider updating the loading method to accept
+    // the json objects directly.
+    var assetArray = new Array();
+    for(var asset in GameAssets.level) {
+        assetArray.push(GameAssets.level[asset].image);
+    }
+    for(var asset in GameAssets.characters) {
+        assetArray.push(GameAssets.characters[asset].image);
+    }
+    for(var asset in GameAssets.awards) {
+        assetArray.push(GameAssets.awards[asset].image);
+    }
+    
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
      * all of these images are properly loaded our game will start.
      */
-    Resources.load([
-        'images/stone-block.png',
-        'images/water-block.png',
-        'images/grass-block.png',
-        'images/enemy-bug.png',
-        'images/char-boy.png'
-    ]);
+    Resources.load(assetArray);
     Resources.onReady(init);
 
     /* Assign the canvas' context object to the global variable (the window
