@@ -15,17 +15,17 @@ Van.prototype.grab = function() {}
 */
 
 // Enemies our player must avoid
-var Enemy = function(alias) {
+var Enemy = function(alias, row) {
 
     // Get the character by alias name.
     var enemy = GameAssets.getEnemy(alias);
 
     // Configure the enemy!
-    this.configure(enemy);
+    this.configure(enemy, row);
 }
 
 // Calculates and returns a row for the enemy's travels.
-Enemy.prototype.configure = function(enemyAsset) {
+Enemy.prototype.configure = function(enemyAsset, row) {
 
     // Store the object asset information for future use.
     this.enemyAsset = enemyAsset;
@@ -35,13 +35,13 @@ Enemy.prototype.configure = function(enemyAsset) {
         // a helper we've provided to easily load images
         this.sprite = enemyAsset.image;
         // Reset the enemy location and speed.  (This first time it's a set, not a reset).
-        this.reset();
+        this.reset(row);
     }
 }
 
 // Calculates and returns a row for the enemy's travels.
 Enemy.prototype.resetX = function() {
-    // The enemies start off screen and move into play.
+    // The enemies start off screen and move into play.  A negative offset is expected.
     this.x = 0 - GameAssets.getTileWidth();
 }
 
@@ -58,19 +58,28 @@ Enemy.prototype.getRandomSpeed = function() {
 }
 
 // Calculates and returns a row for the enemy's travels.
-Enemy.prototype.reset = function() {
+Enemy.prototype.reset = function(row) {
 
     if (this.enemyAsset != null) {
         // The enemies start off screen and move into play.
         this.resetX();
-        // Set the enemy y offset based on the random row and game tile height.
-        this.y = this.getRandomRow() * GameAssets.getTileHeight();
+
+        // If the row has been received as a parameter, use it to set the position.
+        // Otherwise, generate a random row and use it as the setting.
+        if (row != undefined) {
+            this.y = row * GameAssets.getTileHeight();
+        }
+        else {
+            // Set the enemy y offset based on the random row and game tile height.
+            this.y = this.getRandomRow() * GameAssets.getTileHeight();
+        }
         console.log("y: ", this.y);
         // Get a random speed.
         this.speed = this.getRandomSpeed();
         console.log("this.speed: ", this.speed);
     }
     else {
+        console.log("Enemey.reset, Invalid enemyAsset!");
         this.sprite = "";
         this.speed = 20;
         this.x = 0;
@@ -176,7 +185,12 @@ Player.prototype.render = function() {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 var allEnemies = new Array();
-allEnemies.push(new Enemy("enemy-bug"));
+//allEnemies.push(new Enemy("enemy-bug"));
+
+// On game start, add an array to each row.  They'll move at random speeds.
+allEnemies.push(new Enemy("enemy-bug", 1));
+allEnemies.push(new Enemy("enemy-bug", 2));
+allEnemies.push(new Enemy("enemy-bug", 3));
 
 // Place the player object in a variable called player
 
