@@ -48,6 +48,11 @@ var Engine = (function(global) {
         update(dt);
         render();
 
+        /*
+         * Check for level complete and advance the game level if appropriate.
+         */
+        checkForLevelComplete();
+
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
          */
@@ -80,9 +85,20 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
     }
 
+    function checkCollisions() {
+        for (var enemy in enemyManager.allEnemies) {
+
+            var collision = checkCollision (player, enemyManager.allEnemies[enemy]);
+
+            if (collision == true) {
+                console.log("Collision with Enemy: ", enemy);
+            }
+        }
+    }
+    
     /* This is called by the update function  and loops through all of the
      * objects within your allEnemies array as defined in app.js and calls
      * their update() methods. It will then call the update function for your
@@ -91,9 +107,12 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
-        allEnemies.forEach(function(enemy) {
-            enemy.update(dt);
-        });
+
+        // Update the enemies of a valid enemy manager exists.
+        if (enemyManager != null) {
+            enemyManager.updateEnemies(dt);
+        }
+        // Update the player.
         player.update();
     }
 
@@ -145,13 +164,13 @@ var Engine = (function(global) {
      * on your enemy and player entities within app.js
      */
     function renderEntities() {
-        /* Loop through all of the objects within the allEnemies array and call
-         * the render function you have defined.
-         */
-        allEnemies.forEach(function(enemy) {
-            enemy.render();
-        });
 
+        // Render the enemies of a valid enemy manager exists.
+        if (enemyManager != null) {
+            enemyManager.renderEnemies();
+        }
+
+        // Render the player.
         player.render();
     }
 
@@ -160,9 +179,28 @@ var Engine = (function(global) {
      * those sorts of things. It's only called once by the init() method.
      */
     function reset() {
-        // noop
     }
 
+    /*
+     * Called to determine if the current level is complete.
+     */
+    function checkForLevelComplete() {
+
+        if (levelManager.isLevelComplete()) {
+            advanceLevel();
+        }
+    }
+
+    /* Called to start a new game level.  All objects need to handle their own
+     * level reset functionality.  This function centralizes the feature.
+     */
+    function advanceLevel() {
+        // Set the next game level.
+        levelManager.advanceLevel();
+        enemyManager.advanceLevel(levelManager.currentLevel);
+        player.advanceLevel(levelManager.currentLevel);
+    }
+    
     // Build an array of assets to load from the asset list defined for the game.
     // In future iterations, consider updating the loading method to accept
     // the json objects directly.
@@ -176,7 +214,7 @@ var Engine = (function(global) {
     for(var asset in GameAssets.awards) {
         assetArray.push(GameAssets.awards[asset].image);
     }
-    
+
     /* Go ahead and load all of the images we know we're going to need to
      * draw our game level. Then set init as the callback method, so that when
      * all of these images are properly loaded our game will start.
