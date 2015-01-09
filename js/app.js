@@ -215,19 +215,21 @@ Player.prototype.init = function(levelId) {
     if (this.character != null) {
         // Assign the sprite name.
         this.sprite = this.character.image;
-        // The x and y coordinates are grid offsets.  The delta x and y coordinates
+        // The x and y coordinates are grid offsets.  The step x and y values
         // provide usable width and height information for each tile and provide
         // the placement information for the character within the grid system.
-        this.deltaX = this.character.deltaX;
-        this.deltaY = this.character.deltaY;
-        this.x = this.character.startX * this.deltaX;
-        this.y = this.character.startY * this.deltaY;
+        // These values also define how far in each direction the character moves
+        // on player input.
+        this.stepX = GameAssets.getTileWidth();
+        this.stepY = GameAssets.getTileHeight();
+        this.x = this.character.startX * this.stepX;
+        this.y = this.character.startY * this.stepY;
     }
     // Set default and safe values.
     else {
         this.sprite = "";
-        this.deltaX = 0;
-        this.deltaY = 0;
+        this.stepX = 0;
+        this.stepY = 0;
         this.x = 0;
         this.y = 0;
     }
@@ -273,13 +275,13 @@ Player.prototype.handleInput = function(keyCode) {
     // all computers.
 
     if (keyCode == "up") {
-        this.y = this.y - this.deltaY;
+        this.y = this.y - this.stepY;
     } else if (keyCode == "down") {
-        this.y = this.y + this.deltaY;
+        this.y = this.y + this.stepY;
     } else if (keyCode == "right") {
-        this.x = this.x + this.deltaX;
+        this.x = this.x + this.stepX;
     } else if (keyCode == "left") {
-        this.x = this.x - this.deltaX;
+        this.x = this.x - this.stepX;
     }
 
     // Left side of the screen.
@@ -342,7 +344,7 @@ function checkCollision(thing1, thing2) {
     //console.log("y2: ", thing2.y);
     //console.log("w2: ", image2.width);
     //console.log("h2: ", image2.height);
-    
+    // 101, 7
     if (thing1.x < thing2.x + image2.width &&
        thing1.x + image1.width > thing2.x &&
        thing1.y < thing2.y + image2.height &&
@@ -353,6 +355,12 @@ function checkCollision(thing1, thing2) {
     }
     return false;
 }
+
+Player.prototype.OnCollision = function (enemy) {
+    // Reset/initialize the player.
+    this.init();
+}
+
 
 // Global function used to set an interval that adjusts the visibility state of
 // the player so that it blinks when the player finishes a level.

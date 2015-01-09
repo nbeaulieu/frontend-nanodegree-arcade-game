@@ -19,11 +19,11 @@ var GameAssets = {
         { "alias": "enemy", "image": "images/enemy-bug.png", "startX":0, "startY":0 },
     ],
     "characters": [
-        { "alias": "boy", "image": "images/char-boy.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 83 },
-        { "alias": "cat", "image": "images/char-cat-girl.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 83 },
-        { "alias": "horn", "image": "images/char-horn-girl.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 83 },
-        { "alias": "pink", "image": "images/char-pink-girl.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 83 },
-        { "alias": "princess", "image": "images/char-princess-girl.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 83 },
+        { "alias": "boy", "image": "images/char-boy.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 65 },
+        { "alias": "cat", "image": "images/char-cat-girl.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 65 },
+        { "alias": "horn", "image": "images/char-horn-girl.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 65 },
+        { "alias": "pink", "image": "images/char-pink-girl.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 65 },
+        { "alias": "princess", "image": "images/char-princess-girl.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 65 },
     ],
     "enemies": [
         { "alias": "enemy-bug", "image": "images/enemy-bug.png" },
@@ -156,6 +156,22 @@ GameAssets.getCharacter = function(alias) {
     // Log an error to the console.
     console.log("GameAssets.getCharacter, Unable to find character by alias: ", alias)
     return null;
+}
+
+GameAssets.getDeltaX = function(alias) {
+    var character = this.getCharacter(alias);
+    if (character != null) {
+        return character.deltaX;
+    }
+    return 0;
+}
+
+GameAssets.getDeltaY = function(alias) {
+    var character = this.getCharacter(alias);
+    if (character != null) {
+        return character.deltaY;
+    }
+    return 0;
 }
 
 /*

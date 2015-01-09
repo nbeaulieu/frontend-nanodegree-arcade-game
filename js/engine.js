@@ -89,12 +89,15 @@ var Engine = (function(global) {
     }
 
     function checkCollisions() {
+
+        // Check to see if the player is going to survive the level.
         for (var enemy in enemyManager.allEnemies) {
 
             var collision = checkCollision (player, enemyManager.allEnemies[enemy]);
 
             if (collision == true) {
                 console.log("Collision with Enemy: ", enemy);
+                player.OnCollision(enemyManager.allEnemies[enemy]);
             }
         }
     }
@@ -154,7 +157,6 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
-
 
         renderEntities();
     }
