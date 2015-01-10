@@ -1,0 +1,14 @@
+Nicole Beaulieu
+Udacity Front End Developer
+Project 3, Arcade Game
+December 30, 2014
+
+The following list includes the sites I referenced while developing this site for project submission:
+
+http://stackoverflow.com/questions/1590247/how-do-you-implement-a-stack-and-a-queue-in-javascript
+http://blog.sklambert.com/html5-canvas-game-2d-collision-detection/
+https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
+http://www.w3schools.com/tags/canvas_filltext.asp
+
+
+

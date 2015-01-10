@@ -56,11 +56,11 @@ GameManager.prototype.isLevelComplete = function() {
 
 GameManager.prototype.render = function(context) {
 
-    // Set the font properties for drawing text meters. 
+    // Set the font properties for drawing text meters.
     context.font = 'italic 14px Arial';
     context.fillStyle = 'white';
     context.textAlign = 'left';
-    
+
     // Construct the meter strings and draw them.
     var meter = GameAssets.getMeter("currentLevel");
     var textString = meter.text + this.currentLevel;
@@ -114,8 +114,6 @@ Collider.prototype.Set = function(x, y, width, height) {
 var Award = function() {
 
     var awardIndex = this.getRandomAward();
-    console.log(awardIndex);
-
     // Configure the award.
     this.configure(awardIndex);
 }
@@ -125,13 +123,13 @@ Award.prototype.configure = function(awardIndex) {
 
     // Store the object asset information for future use.
     this.awardAsset = GameAssets.getAward(awardIndex);
-    
+
     if (this.awardAsset != null) {
         // The image/sprite for our enemies, this uses
         // a helper we've provided to easily load images
         this.sprite = this.awardAsset.image;
         this.points = this.awardAsset.points;
-        
+
         // Place the award.
         // Get a random row and column for the awards.
         var row = this.getRandomRow();
@@ -203,9 +201,6 @@ AwardManager.prototype.initAwards = function (levelId) {
 
     // Place all enemy objects in an array called allEnemies
     this.awards = new Array();
-    
-    console.log("AwardManager.initAwards: ", levelId);
-    console.log("GameAssets.getAwardCount: ", GameAssets.getAwardCount(levelId));
 
     // On game start, add the defined number of enemies to rows.  The enemies will move at random speeds
     // and manage their own collisions so that they don't walk on each other  When the enemies have reached
@@ -617,7 +612,7 @@ var player = new Player(gameManager.currentLevel);
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
-    
+
     var allowedKeys = {
         37: 'left',
         38: 'up',

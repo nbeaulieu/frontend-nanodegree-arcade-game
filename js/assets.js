@@ -32,7 +32,7 @@ var GameAssets = {
         { "alias": "blue-gem", "image": "images/Gem Blue.png", "points": 1, "deltaX":101, "deltaY": 63, "collisionBox": [ 0, 58, 101, 102 ] },
         { "alias": "green-gem", "image": "images/Gem Green.png", "points": 3, "deltaX":101, "deltaY": 63, "collisionBox": [ 0, 58, 101, 102 ] },
         { "alias": "orange-gem", "image": "images/Gem Orange.png", "points": 5, "deltaX":101, "deltaY": 63, "collisionBox": [ 0, 58, 101, 102 ] },
-        { "alias": "key", "image": "images/Key.png", "points": 10, "deltaX":101, "deltaY": 63, "collisionBox": [ 0, 58, 101, 102 ] },
+        { "alias": "key", "image": "images/Key.png", "points": 10, "deltaX":101, "deltaY": 63, "collisionBox": [ 0, 58, 101, 102 ] }
     ],
     "lives": [
         { "alias": "heart", "image": "images/Heart.png" }
