@@ -55,13 +55,8 @@ GameManager.prototype.isLevelComplete = function() {
 }
 
 GameManager.prototype.render = function(context) {
-    //console.log("gameManager.gamesPlayed:    ", gameManager.gamesPlayed);
-    //console.log("gameManager.currentLevel:   ", gameManager.currentLevel);
-    //console.log("gameManager.playerWinCount: ", gameManager.playerWinCount);
-    //console.log("gameManager.enemyWinCount:  ", gameManager.enemyWinCount);
-    //console.log("gameManager.levelScore:     ", gameManager.levelScore);
-    //console.log("gameManager.totalScore:     ", gameManager.totalScore);
 
+    // Set the font properties for drawing text meters. 
     context.font = 'italic 14px Arial';
     context.fillStyle = 'white';
     context.textAlign = 'left';
@@ -143,8 +138,8 @@ Award.prototype.configure = function(awardIndex) {
         var column = this.getRandomColumn();
 
         // Set the x and y values for the award.
-        this.x = this.awardAsset.startX + row * GameAssets.getTileWidth();
-        this.y = this.awardAsset.startX + column * GameAssets.getTileHeight();
+        this.x = row * GameAssets.getTileWidth();
+        this.y = column * GameAssets.getTileHeight();
         // Reset/initialize the player.
         this.isVisible = true;
         // Get the defined collision box offsets.
@@ -163,7 +158,7 @@ Award.prototype.getRandomAward = function() {
 // Gets one of the awards for display.
 Award.prototype.getRandomRow = function() {
     // Get a random award between 0 and the total awards.  Formula is: Math.random() * (max - min) + min.
-    return Math.floor(Math.random() * (GameAssets.getEnemyRows() - 1) + 1);
+    return Math.floor(Math.random() * (GameAssets.getAwardMaxRow() - GameAssets.getAwardMinRow()) + GameAssets.getAwardMinRow());
 }
 
 // Gets one of the awards for display.
@@ -456,7 +451,7 @@ Player.prototype.init = function(levelId) {
         // These values also define how far in each direction the character moves
         // on player input.
         this.stepX = GameAssets.getTileWidth();
-        this.stepY = GameAssets.getTileHeight();
+        this.stepY = GameAssets.getTileHeight() - 3;
         this.x = this.character.startX * this.stepX;
         this.y = this.character.startY * this.stepY;
 

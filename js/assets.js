@@ -6,11 +6,11 @@
 var GameAssets = {
     "level": { "totalRows":6, "totalColumns":5, "totalEnemyRows":3, "winningRow":0, "tileWidth":101, "tileHeight": 83, "winningBlinkCount":5, "losingBlinkCount":3 },
     "levelConfig" : [
-        {"levelMinRange":0, "character":"boy", "spawnSpeed":750, "enemyCount":2, "enemyMinRow":1, "enemyMaxRow":1, "enemySpeedMin":10, "enemySpeedMax": 30, "totalAwards":1 },
-        {"levelMinRange":2, "character":"cat", "spawnSpeed":750, "enemyCount":3, "enemyMinRow":1, "enemyMaxRow":2, "enemySpeedMin":20, "enemySpeedMax": 40, "totalAwards":2 },
-        {"levelMinRange":5, "character":"pink", "spawnSpeed":750, "enemyCount":4, "enemyMinRow":1, "enemyMaxRow":3, "enemySpeedMin":30, "enemySpeedMax": 60, "totalAwards":3 },
-        {"levelMinRange":8, "character":"princess", "spawnSpeed":750, "enemyCount":5, "enemyMinRow":1, "enemyMaxRow":3, "enemySpeedMin":30, "enemySpeedMax": 60, "totalAwards":4 },
-        {"levelMinRange":12, "character":"horn", "spawnSpeed":750, "enemyCount":6, "enemyMinRow":1, "enemyMaxRow":3, "enemySpeedMin":30, "enemySpeedMax": 60, "totalAwards":5 }
+        {"levelMinRange":0, "character":"boy", "spawnSpeed":750, "enemyCount":2, "enemyMinRow":1, "enemyMaxRow":1, "awardMinRow":1, "awardMaxRow":5, "enemySpeedMin":10, "enemySpeedMax": 30, "totalAwards":1 },
+        {"levelMinRange":2, "character":"cat", "spawnSpeed":750, "enemyCount":3, "enemyMinRow":1, "enemyMaxRow":2, "awardMinRow":1, "awardMaxRow":5, "enemySpeedMin":20, "enemySpeedMax": 40, "totalAwards":2 },
+        {"levelMinRange":5, "character":"pink", "spawnSpeed":750, "enemyCount":4, "enemyMinRow":1, "enemyMaxRow":3, "awardMinRow":1, "awardMaxRow":5, "enemySpeedMin":30, "enemySpeedMax": 60, "totalAwards":3 },
+        {"levelMinRange":8, "character":"princess", "spawnSpeed":750, "enemyCount":5, "enemyMinRow":1, "enemyMaxRow":3, "awardMinRow":1, "awardMaxRow":5, "enemySpeedMin":30, "enemySpeedMax": 60, "totalAwards":4 },
+        {"levelMinRange":12, "character":"horn", "spawnSpeed":750, "enemyCount":6, "enemyMinRow":1, "enemyMaxRow":3, "awardMinRow":1, "awardMaxRow":5, "enemySpeedMin":30, "enemySpeedMax": 60, "totalAwards":5 }
     ],
     "tiles": [
         { "alias": "stone", "image": "images/stone-block.png", "startX":0, "startY":0 },
@@ -29,11 +29,13 @@ var GameAssets = {
         { "alias": "enemy-bug", "image": "images/enemy-bug.png", "collisionBox": [ 0, 76, 101, 71 ] }
     ],
     "awards": [
-        { "alias": "blue-gem", "image": "images/Gem Blue.png", "points": 1, "startX":0, "startY":0, "collisionBox": [ 0, 52, 101, 88 ] },
-        { "alias": "green-gem", "image": "images/Gem Green.png", "points": 3, "startX":0, "startY":0, "collisionBox": [ 0, 52, 101, 88 ] },
-        { "alias": "orange-gem", "image": "images/Gem Orange.png", "points": 5, "startX":0, "startY":0, "collisionBox": [ 0, 52, 101, 88 ] },
-        { "alias": "key", "image": "images/Heart.png", "points": 10, "startX":0, "startY":0, "collisionBox": [ 0, 52, 101, 88 ] },
-        { "alias": "heart", "image": "images/Key.png", "points": 25, "startX":0, "startY":0, "collisionBox": [ 0, 52, 101, 88 ] }
+        { "alias": "blue-gem", "image": "images/Gem Blue.png", "points": 1, "deltaX":101, "deltaY": 63, "collisionBox": [ 0, 58, 101, 102 ] },
+        { "alias": "green-gem", "image": "images/Gem Green.png", "points": 3, "deltaX":101, "deltaY": 63, "collisionBox": [ 0, 58, 101, 102 ] },
+        { "alias": "orange-gem", "image": "images/Gem Orange.png", "points": 5, "deltaX":101, "deltaY": 63, "collisionBox": [ 0, 58, 101, 102 ] },
+        { "alias": "key", "image": "images/Key.png", "points": 10, "deltaX":101, "deltaY": 63, "collisionBox": [ 0, 58, 101, 102 ] },
+    ],
+    "lives": [
+        { "alias": "heart", "image": "images/Heart.png" }
     ],
     "obstacles": [
         { "alias": "rock", "image": "images/Rock.png", "startX":200, "startY":400 }
@@ -283,4 +285,13 @@ GameAssets.getAwardPoints = function(levelId) {
     return GameAssets.levelConfig[GameAssets.getIndexForLevel(levelId)].points;
 }
 
+GameAssets.getAwardMinRow = function(levelId) {
+    //console.log("GameAssets.getAwardMinRow: ", GameAssets.levelConfig[GameAssets.getIndexForLevel(levelId)].awardMinRow);
+    return GameAssets.levelConfig[GameAssets.getIndexForLevel(levelId)].awardMinRow;
+}
+
+GameAssets.getAwardMaxRow = function(levelId) {
+    //console.log("GameAssets.getAwardMaxRow: ", GameAssets.levelConfig[GameAssets.getIndexForLevel(levelId)].awardMaxRow);
+    return GameAssets.levelConfig[GameAssets.getIndexForLevel(levelId)].awardMaxRow;
+}
 
