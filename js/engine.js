@@ -46,7 +46,10 @@ var Engine = (function(global) {
          * our update function since it may be used for smooth animation.
          */
         update(dt);
+        // Draw the game.
         render();
+        // Check for collisions after all updates and rendering is complete.
+        checkCollisions();
 
         /*
          * Check for level complete and advance the game level if appropriate.
@@ -85,21 +88,61 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        checkCollisions();
     }
 
+    // Checks to see if any of the enemies are colliding with the player.
     function checkCollisions() {
+
+        // Check to see if the player has run into any awards.
+        for (var award in awardManager.awards) {
+
+            var collision = checkCollision (player, awardManager.awards[award]);
+            // The player has collected an award, add the points and remove the award from play.
+            if (collision == true) {
+                gameManager.addToScore(awardManager.awards[award]);
+                awardManager.onCollision(awardManager.awards[award]);
+            }
+        }
 
         // Check to see if the player is going to survive the level.
         for (var enemy in enemyManager.allEnemies) {
 
             var collision = checkCollision (player, enemyManager.allEnemies[enemy]);
-
+            // The player has been defeated.  Handle the loss.
             if (collision == true) {
-                console.log("Collision with Enemy: ", enemy);
-                player.OnCollision(enemyManager.allEnemies[enemy]);
+                gameManager.addEnemyWin();
+                player.onCollision(enemyManager.allEnemies[enemy], gameManager.currentLevel);
+                // Stop processing.  The enemy has been detected.
+                break;
             }
         }
+    }
+
+    // Checks to see if the two objects are colliding.
+    function checkCollision(thing1, thing2) {
+    
+        var image1 = Resources.get(thing1.sprite);
+        var image2 = Resources.get(thing2.sprite);
+    
+        var collider1 = thing1.collider;
+        var collider2 = thing2.collider;
+    
+        // If the objects aren't both collidable, return.    
+        if (collider1 == null || collider2 == null) {
+            return false;
+        }
+    
+        // Check to see if any of the corners of either of the objects are within the bounds
+        // of the other object.  If any of the corners evalutes to true, return true.
+        if ((thing1.x + collider1.x) < (thing2.x + collider2.width) &&
+            (thing1.x + collider1.width) > (thing2.x + collider2.x) &&
+            (thing1.y + collider1.y) < (thing2.y + collider2.height) &&
+            (thing1.y + collider1.height) > (thing2.y + collider2.y)) {
+            
+            // Collision detected!
+            return true;
+        }
+        return false;
     }
     
     /* This is called by the update function  and loops through all of the
@@ -114,6 +157,10 @@ var Engine = (function(global) {
         // Update the enemies of a valid enemy manager exists.
         if (enemyManager != null) {
             enemyManager.updateEnemies(dt);
+        }
+
+        if (awardManager != null) {
+            awardManager.updateAwards(dt);
         }
         // Update the player.
         player.update();
@@ -172,8 +219,15 @@ var Engine = (function(global) {
             enemyManager.renderEnemies();
         }
 
+        // Render the awards.
+        if (awardManager != null) {
+            awardManager.renderAwards();
+        }
+
         // Render the player.
         player.render();
+        // Draw the game meters last so that they appear on top.
+        gameManager.render(ctx);
     }
 
     /* This function does nothing but it could have been a good place to
@@ -188,7 +242,7 @@ var Engine = (function(global) {
      */
     function checkForLevelComplete() {
 
-        if (levelManager.isLevelComplete()) {
+        if (gameManager.isLevelComplete()) {
             advanceLevel();
         }
     }
@@ -198,9 +252,11 @@ var Engine = (function(global) {
      */
     function advanceLevel() {
         // Set the next game level.
-        levelManager.advanceLevel();
-        enemyManager.advanceLevel(levelManager.currentLevel);
-        player.advanceLevel(levelManager.currentLevel);
+        gameManager.advanceLevel();
+        gameManager.addPlayerWin();
+        enemyManager.advanceLevel(gameManager.currentLevel);
+        awardManager.advanceLevel(gameManager.currentLevel);
+        player.advanceLevel(gameManager.currentLevel);
     }
     
     // Build an array of assets to load from the asset list defined for the game.

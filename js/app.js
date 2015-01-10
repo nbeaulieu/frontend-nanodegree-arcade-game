@@ -1,39 +1,269 @@
 /*
- *var Car = function(loc) {
-    this.loc = loc;
-}
-Car.prototype.move = function() {
-    this.loc++;
-}
-
-var Van = function (loc) {
-    Car.call(this, loc);
-}
-Van.prototype = Object.create(Car.prototype);
-Van.prototype.constructor = Van;
-Van.prototype.grab = function() {}
-*/
-
-/*
- * The level manager keeps track of information that is specific to a game level.
- * In this game, the information is brief but encapsulation still makes sense
- * for future expansion.
+ * The game manager keeps track of game play information including level,
+ * player win, enemy win, and score information.
  */
-var LevelManager = function() {
+var GameManager = function() {
 
     // Start at level 0.
     this.currentLevel = 0;
+    // Keep a running count of how many times the player tries to cross the road.
+    this.gamesPlayed = 0;
+    // Initialize the win accounting.
+    this.playerWinCount = 0;
+    this.enemyWinCount = 0;
+    // Initialize the score counters.
+    this.levelScore = 0;
+    this.totalScore = 0;
 }
 
 // Advances the level and updates all level variables.
-LevelManager.prototype.advanceLevel = function() {
+GameManager.prototype.advanceLevel = function() {
+
+    // Update the level counters.
     this.currentLevel++;
+    this.gamesPlayed++;
+    // Reset the level scores.
+    this.levelScore = 0;
+}
+
+// Adds a win to the enemy meter.
+GameManager.prototype.addEnemyWin = function() {
+    // Chalk one up for the enemy.
+    this.enemyWinCount++;
+    // Keep track of this road crossing attempt.
+    this.gamesPlayed++;
+}
+
+// Adds a win to the player meter.
+GameManager.prototype.addPlayerWin = function() {
+    this.playerWinCount++;
+}
+
+// Adds the value to the level and total scores.
+GameManager.prototype.addToScore = function(award) {
+
+    // If a valid award has been received, add it's point value to the meter.
+    if (award != null) {
+        this.levelScore = this.levelScore + award.points;
+        this.totalScore = this.totalScore + award.points;
+    }
 }
 
 // Returns true if the current level is complete.
-LevelManager.prototype.isLevelComplete = function() {
+GameManager.prototype.isLevelComplete = function() {
     return player != null && player.beatLevel == true;
 }
+
+GameManager.prototype.render = function(context) {
+    //console.log("gameManager.gamesPlayed:    ", gameManager.gamesPlayed);
+    //console.log("gameManager.currentLevel:   ", gameManager.currentLevel);
+    //console.log("gameManager.playerWinCount: ", gameManager.playerWinCount);
+    //console.log("gameManager.enemyWinCount:  ", gameManager.enemyWinCount);
+    //console.log("gameManager.levelScore:     ", gameManager.levelScore);
+    //console.log("gameManager.totalScore:     ", gameManager.totalScore);
+
+    context.font = 'italic 14px Arial';
+    context.fillStyle = 'white';
+    context.textAlign = 'left';
+    
+    // Construct the meter strings and draw them.
+    var meter = GameAssets.getMeter("currentLevel");
+    var textString = meter.text + this.currentLevel;
+    context.fillText(textString, meter.x, meter.y, meter.max);
+
+    meter = GameAssets.getMeter("gamesPlayed");
+    textString = meter.text + this.gamesPlayed;
+    context.fillText(textString, meter.x, meter.y, meter.max);
+
+    meter = GameAssets.getMeter("playerWins");
+    textString = meter.text + this.playerWinCount;
+    context.fillText(textString, meter.x, meter.y, meter.max);
+
+    meter = GameAssets.getMeter("enemyWins");
+    textString = meter.text + this.enemyWinCount;
+    context.fillText(textString, meter.x, meter.y, meter.max);
+
+    meter = GameAssets.getMeter("totalScore");
+    textString = meter.text + this.totalScore;
+    context.fillText(textString, meter.x, meter.y, meter.max);
+
+    meter = GameAssets.getMeter("levelScore");
+    textString = meter.text + this.levelScore;
+    context.fillText(textString, meter.x, meter.y, meter.max);
+}
+
+/*
+ * The Collider object is added to objects that require collision detection in the game.
+ * In a real game, this class would be expanded to provide deeper and more robust functionality.
+ * This is a lightweight class that really is just defines the 2D collision box.
+ */
+var Collider = function(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+}
+
+Collider.prototype.Set = function(x, y, width, height) {
+    this.x = x;
+    this.y = y;
+    this.width = width;
+    this.height = height;
+}
+
+/*
+ * Defines the awards that the player can collect.
+ */
+
+// Enemies our player must avoid
+var Award = function() {
+
+    var awardIndex = this.getRandomAward();
+    console.log(awardIndex);
+
+    // Configure the award.
+    this.configure(awardIndex);
+}
+
+// Configures the award for play.
+Award.prototype.configure = function(awardIndex) {
+
+    // Store the object asset information for future use.
+    this.awardAsset = GameAssets.getAward(awardIndex);
+    
+    if (this.awardAsset != null) {
+        // The image/sprite for our enemies, this uses
+        // a helper we've provided to easily load images
+        this.sprite = this.awardAsset.image;
+        this.points = this.awardAsset.points;
+        
+        // Place the award.
+        // Get a random row and column for the awards.
+        var row = this.getRandomRow();
+        var column = this.getRandomColumn();
+
+        // Set the x and y values for the award.
+        this.x = this.awardAsset.startX + row * GameAssets.getTileWidth();
+        this.y = this.awardAsset.startX + column * GameAssets.getTileHeight();
+        // Reset/initialize the player.
+        this.isVisible = true;
+        // Get the defined collision box offsets.
+        var collisionBox = this.awardAsset.collisionBox;
+        // Add the collider to the player.
+        this.collider = new Collider(collisionBox[0], collisionBox[1], collisionBox[2], collisionBox[3]);
+    }
+}
+
+// Gets one of the awards for display.
+Award.prototype.getRandomAward = function() {
+    // Get a random award between 0 and the total awards.  Formula is: Math.random() * (max - min) + min.
+    return Math.floor(Math.random() * (GameAssets.getTotalAwards() - 1) + 1);
+}
+
+// Gets one of the awards for display.
+Award.prototype.getRandomRow = function() {
+    // Get a random award between 0 and the total awards.  Formula is: Math.random() * (max - min) + min.
+    return Math.floor(Math.random() * (GameAssets.getEnemyRows() - 1) + 1);
+}
+
+// Gets one of the awards for display.
+Award.prototype.getRandomColumn = function() {
+    // Get a random award between 0 and the total awards.  Formula is: Math.random() * (max - min) + min.
+    return Math.floor(Math.random() * (GameAssets.getColumns()));
+}
+
+// Update the award.
+// Parameter: dt, a time delta between ticks
+Award.prototype.update = function(dt) {
+}
+
+// Draw the enemy on the screen, required method for game
+Award.prototype.render = function() {
+    // Only draw the award if it's visible.
+    if (this.isVisible == true) {
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    }
+}
+
+Award.prototype.onCollision = function () {
+    // Reset/initialize the player.
+    this.isVisible = false;
+    // Remove the collider so that this award is no longer included in the detection.
+    this.collider = null;
+}
+
+/*
+ * Defines the awards that the player can collect.
+ */
+
+// Manages the awards that the player collects during the game.
+var AwardManager = function(levelId) {
+
+    // Create the enemies for the current game level.
+    this.initAwards(levelId);
+}
+
+// Called to create and configure enemies for the current level.
+AwardManager.prototype.initAwards = function (levelId) {
+
+    // Place all enemy objects in an array called allEnemies
+    this.awards = new Array();
+    
+    console.log("AwardManager.initAwards: ", levelId);
+    console.log("GameAssets.getAwardCount: ", GameAssets.getAwardCount(levelId));
+
+    // On game start, add the defined number of enemies to rows.  The enemies will move at random speeds
+    // and manage their own collisions so that they don't walk on each other  When the enemies have reached
+    // the end of the screen, they'll reset and move into random rows again.0
+    for (var i = 0; i < GameAssets.getAwardCount(levelId); i++) {
+
+        // Push the award into the list.
+        this.awards.push(new Award());
+    }
+}
+
+AwardManager.prototype.onCollision = function (award) {
+
+    // Route the collision to the award.
+    if (award != null) {
+        award.onCollision();
+    }
+}
+
+// Called to update the attributes of the enemies (location, etc.).
+AwardManager.prototype.updateAwards = function(dt) {
+
+    // Update each of the enemies.
+    if (this.awards != null) {
+        this.awards.forEach(function(award) {
+            award.update(dt);
+        });
+    }
+    else {
+        console.log("AwardManager.updateAwards: No awards to render.");
+    }
+}
+
+// Called to draw the awards on screen.
+AwardManager.prototype.renderAwards = function() {
+
+    // Loop through the objects in the allEnemies array and call the render function.
+    if (this.awards != null) {
+        this.awards.forEach(function(award) {
+            award.render();
+        });
+    }
+}
+
+// Called to reset the awards for the next level.
+AwardManager.prototype.advanceLevel = function (levelId) {
+    // Reset/initialize the enemies.
+    this.initAwards(levelId);
+}
+
+/*
+ * Defines the enemies that the player must avoid.
+ */
 
 // Enemies our player must avoid
 var Enemy = function(alias, row) {
@@ -69,15 +299,15 @@ Enemy.prototype.resetX = function() {
 // Calculates and returns a row for the enemy's travels.
 Enemy.prototype.getRandomRow = function() {
     // Get a random value betwen min and max.  Adjust to make the range inclusive on the max end.
-    return Math.floor(Math.random() * (GameAssets.getEnemyMaxRow(levelManager.currentLevel) - GameAssets.getEnemyMinRow(levelManager.currentLevel) + 1)) +
-        GameAssets.getEnemyMinRow(levelManager.currentLevel);
+    return Math.floor(Math.random() * (GameAssets.getEnemyMaxRow(gameManager.currentLevel) - GameAssets.getEnemyMinRow(gameManager.currentLevel) + 1)) +
+        GameAssets.getEnemyMinRow(gameManager.currentLevel);
 }
 
 // Calculates and returns a speed for the enemy's movement.
 Enemy.prototype.getRandomSpeed = function() {
     // Get a random speed between min and max.  Adjust to make the range inclusive on the max end.
-    return Math.floor(Math.random() * (GameAssets.getEnemySpeedMax(levelManager.currentLevel) - GameAssets.getEnemySpeedMin(levelManager.currentLevel) + 1)) +
-        GameAssets.getEnemySpeedMin(levelManager.currentLevel);
+    return Math.floor(Math.random() * (GameAssets.getEnemySpeedMax(gameManager.currentLevel) - GameAssets.getEnemySpeedMin(gameManager.currentLevel) + 1)) +
+        GameAssets.getEnemySpeedMin(gameManager.currentLevel);
 }
 
 // Calculates and returns a row for the enemy's travels.
@@ -98,6 +328,11 @@ Enemy.prototype.reset = function(row) {
         }
         // Get a random speed.
         this.speed = this.getRandomSpeed();
+
+        // Get the defined collision box offsets.
+        var collisionBox = this.enemyAsset.collisionBox;
+        // Add the collider to the player.
+        this.collider = new Collider(collisionBox[0], collisionBox[1], collisionBox[2], collisionBox[3]);
     }
     else {
         // Log an error to the console.
@@ -106,6 +341,7 @@ Enemy.prototype.reset = function(row) {
         this.speed = 20;
         this.x = 0;
         this.y = 0;
+        this.collider = null;
     }
 }
 
@@ -147,13 +383,12 @@ EnemyManager.prototype.initEnemies = function (levelId) {
 
         // Push the enemy into the list.
         this.allEnemies.push(new Enemy("enemy-bug"));
-
         // The row can optionally be forced by adding a second parameter to the enemy constructor, as shown.
         //this.allEnemies.push(new Enemy("enemy-bug", i % GameAssets.getEnemyRows() + 1));
     }
 }
 
-// Called to reset the player and advance it to the next level.
+// Called to reset the enemies and prepare them for the next level.
 EnemyManager.prototype.advanceLevel = function (levelId) {
     // Reset/initialize the enemies.
     this.initEnemies(levelId);
@@ -169,7 +404,7 @@ EnemyManager.prototype.updateEnemies = function(dt) {
         });
     }
     else {
-        console.log("no enemies");
+        console.log("EnemyManager.updateEnemies: No enemies to render.");
     }
 }
 
@@ -190,7 +425,7 @@ EnemyManager.prototype.renderEnemies = function() {
 var Player = function(levelId) {
 
     // initialize the player.
-    this.init();
+    this.init(levelId);
 }
 
 // Initialize the player.
@@ -224,6 +459,11 @@ Player.prototype.init = function(levelId) {
         this.stepY = GameAssets.getTileHeight();
         this.x = this.character.startX * this.stepX;
         this.y = this.character.startY * this.stepY;
+
+        // Get the defined collision box offsets.
+        var collisionBox = GameAssets.getCollisionBox(this.alias);
+        // Add the collider to the player.
+        this.collider = new Collider(collisionBox[0], collisionBox[1], collisionBox[2], collisionBox[3]);
     }
     // Set default and safe values.
     else {
@@ -232,7 +472,11 @@ Player.prototype.init = function(levelId) {
         this.stepY = 0;
         this.x = 0;
         this.y = 0;
+        this.collider = new Collider(0, 0, 0, 0);
+        this.collider.Set(0, 0, 0, 0);
     }
+    // Enable movement by default.
+    this.enableInput = true;
 }
 
 // Update the players's position, required method for game
@@ -244,6 +488,8 @@ Player.prototype.update = function(dt) {
 
 // Celebrate the winning level.
 Player.prototype.completedLevel = function() {
+    // Disable movement when the level up occurs.
+    this.enableInput = false;
     // Blink the player to show that the level is complete.
     this.startBlink();
 }
@@ -269,6 +515,11 @@ Player.prototype.stopBlink = function() {
 
 // Update the players's position, required method for game
 Player.prototype.handleInput = function(keyCode) {
+
+    // If the player is not allowed to move, do not process the keystrokes.
+    if (this.enableInput == false) {
+        return;
+    }
 
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
@@ -317,7 +568,6 @@ Player.prototype.handleInput = function(keyCode) {
 // Draw the player on the screen, required method for game
 Player.prototype.render = function() {
 
-
     // If the player is showing, draw it.
     if (this.isShowing == true) {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -330,37 +580,10 @@ Player.prototype.advanceLevel = function (levelId) {
     this.init(levelId);
 }
 
-function checkCollision(thing1, thing2) {
-
-    var image1 = Resources.get(thing1.sprite);
-    var image2 = Resources.get(thing2.sprite);
-    
-    //console.log("x1: ", thing1.x);
-    //console.log("y1: ", thing1.y);
-    //console.log("w1: ", image1.width);
-    //console.log("h1: ", image1.height);
-    
-    //console.log("x2: ", thing2.x);
-    //console.log("y2: ", thing2.y);
-    //console.log("w2: ", image2.width);
-    //console.log("h2: ", image2.height);
-    // 101, 7
-    if (thing1.x < thing2.x + image2.width &&
-       thing1.x + image1.width > thing2.x &&
-       thing1.y < thing2.y + image2.height &&
-       image1.height + thing1.y > thing2.y) {
-        
-        // Collision detected!
-        return true;
-    }
-    return false;
-}
-
-Player.prototype.OnCollision = function (enemy) {
+Player.prototype.onCollision = function (enemy, levelId) {
     // Reset/initialize the player.
-    this.init();
+    this.init(levelId);
 }
-
 
 // Global function used to set an interval that adjusts the visibility state of
 // the player so that it blinks when the player finishes a level.
@@ -382,19 +605,24 @@ function blinkPlayer() {
 
 // Now instantiate your objects.
 
-// Create the level manager object first.
-var levelManager = new LevelManager();
+// Create the game manager object first.
+var gameManager = new GameManager();
 
 // Create an enemy manager.  This object keeps track of instantiated enemies
 // and manages their update and render functions.
-var enemyManager = new EnemyManager(levelManager.currentLevel);
+var enemyManager = new EnemyManager(gameManager.currentLevel);
+
+// Create an enemy manager.  This object keeps track of instantiated enemies
+// and manages their update and render functions.
+var awardManager = new AwardManager(gameManager.currentLevel);
 
 // Place the player object in a variable called player
-var player = new Player(levelManager.currentLevel);
+var player = new Player(gameManager.currentLevel);
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
+    
     var allowedKeys = {
         37: 'left',
         38: 'up',

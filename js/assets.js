@@ -4,40 +4,48 @@
  */
 
 var GameAssets = {
-    "level": { "totalRows":6, "totalColumns":5, "totalEnemyRows":3, "winningRow":0, "tileWidth":101, "tileHeight": 83, "winningBlinkCount":7 },
+    "level": { "totalRows":6, "totalColumns":5, "totalEnemyRows":3, "winningRow":0, "tileWidth":101, "tileHeight": 83, "winningBlinkCount":5, "losingBlinkCount":3 },
     "levelConfig" : [
-        {"levelMinRange":0, "character":"boy", "spawnSpeed":750, "enemyCount":2, "enemyMinRow":1, "enemyMaxRow":1, "enemySpeedMin":10, "enemySpeedMax": 30 },
-        {"levelMinRange":2, "character":"cat", "spawnSpeed":750, "enemyCount":3, "enemyMinRow":1, "enemyMaxRow":2, "enemySpeedMin":20, "enemySpeedMax": 40 },
-        {"levelMinRange":5, "character":"pink", "spawnSpeed":750, "enemyCount":4, "enemyMinRow":1, "enemyMaxRow":3, "enemySpeedMin":30, "enemySpeedMax": 60 },
-        {"levelMinRange":8, "character":"princess", "spawnSpeed":750, "enemyCount":5, "enemyMinRow":1, "enemyMaxRow":3, "enemySpeedMin":30, "enemySpeedMax": 60 },
-        {"levelMinRange":12, "character":"horn", "spawnSpeed":750, "enemyCount":6, "enemyMinRow":1, "enemyMaxRow":3, "enemySpeedMin":30, "enemySpeedMax": 60 }
+        {"levelMinRange":0, "character":"boy", "spawnSpeed":750, "enemyCount":2, "enemyMinRow":1, "enemyMaxRow":1, "enemySpeedMin":10, "enemySpeedMax": 30, "totalAwards":1 },
+        {"levelMinRange":2, "character":"cat", "spawnSpeed":750, "enemyCount":3, "enemyMinRow":1, "enemyMaxRow":2, "enemySpeedMin":20, "enemySpeedMax": 40, "totalAwards":2 },
+        {"levelMinRange":5, "character":"pink", "spawnSpeed":750, "enemyCount":4, "enemyMinRow":1, "enemyMaxRow":3, "enemySpeedMin":30, "enemySpeedMax": 60, "totalAwards":3 },
+        {"levelMinRange":8, "character":"princess", "spawnSpeed":750, "enemyCount":5, "enemyMinRow":1, "enemyMaxRow":3, "enemySpeedMin":30, "enemySpeedMax": 60, "totalAwards":4 },
+        {"levelMinRange":12, "character":"horn", "spawnSpeed":750, "enemyCount":6, "enemyMinRow":1, "enemyMaxRow":3, "enemySpeedMin":30, "enemySpeedMax": 60, "totalAwards":5 }
     ],
     "tiles": [
         { "alias": "stone", "image": "images/stone-block.png", "startX":0, "startY":0 },
         { "alias": "water", "image": "images/water-block.png", "startX":0, "startY":0 },
         { "alias": "grass", "image": "images/grass-block.png", "startX":0, "startY":0 },
-        { "alias": "enemy", "image": "images/enemy-bug.png", "startX":0, "startY":0 },
+        { "alias": "enemy", "image": "images/enemy-bug.png", "startX":0, "startY":0 }
     ],
     "characters": [
-        { "alias": "boy", "image": "images/char-boy.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 65 },
-        { "alias": "cat", "image": "images/char-cat-girl.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 65 },
-        { "alias": "horn", "image": "images/char-horn-girl.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 65 },
-        { "alias": "pink", "image": "images/char-pink-girl.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 65 },
-        { "alias": "princess", "image": "images/char-princess-girl.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 65 },
+        { "alias": "boy", "image": "images/char-boy.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 63, "collisionBox": [ 0, 52, 101, 88 ] },
+        { "alias": "cat", "image": "images/char-cat-girl.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 63, "collisionBox": [ 0, 52, 101, 88 ] },
+        { "alias": "horn", "image": "images/char-horn-girl.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 63, "collisionBox": [ 0, 52, 101, 88 ] },
+        { "alias": "pink", "image": "images/char-pink-girl.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 63, "collisionBox": [ 0, 52, 101, 88  ] },
+        { "alias": "princess", "image": "images/char-princess-girl.png", "startX":2, "startY":5, "deltaX":101, "deltaY": 63, "collisionBox": [ 0, 52, 101, 88 ] }
     ],
     "enemies": [
-        { "alias": "enemy-bug", "image": "images/enemy-bug.png" },
+        { "alias": "enemy-bug", "image": "images/enemy-bug.png", "collisionBox": [ 0, 76, 101, 71 ] }
     ],
     "awards": [
-        { "alias": "blue-gem", "image": "images/Gem Blue.png", "startX":0, "startY":0 },
-        { "alias": "green-gem", "image": "images/Gem Green.png", "startX":0, "startY":0 },
-        { "alias": "orange-gem", "image": "images/Gem Orange.png", "startX":0, "startY":0 },
-        { "alias": "key", "image": "images/Heart.png", "startX":0, "startY":0 },
-        { "alias": "heart", "image": "images/Key.png", "startX":0, "startY":0 },
+        { "alias": "blue-gem", "image": "images/Gem Blue.png", "points": 1, "startX":0, "startY":0, "collisionBox": [ 0, 52, 101, 88 ] },
+        { "alias": "green-gem", "image": "images/Gem Green.png", "points": 3, "startX":0, "startY":0, "collisionBox": [ 0, 52, 101, 88 ] },
+        { "alias": "orange-gem", "image": "images/Gem Orange.png", "points": 5, "startX":0, "startY":0, "collisionBox": [ 0, 52, 101, 88 ] },
+        { "alias": "key", "image": "images/Heart.png", "points": 10, "startX":0, "startY":0, "collisionBox": [ 0, 52, 101, 88 ] },
+        { "alias": "heart", "image": "images/Key.png", "points": 25, "startX":0, "startY":0, "collisionBox": [ 0, 52, 101, 88 ] }
     ],
     "obstacles": [
-        { "alias": "rock", "image": "images/Rock.png", "startX":200, "startY":400 },
+        { "alias": "rock", "image": "images/Rock.png", "startX":200, "startY":400 }
     ],
+    "meters": [
+        { "alias":"currentLevel", "text": "Current Level: ", "x":5,   "y":560, "max":125 },
+        { "alias":"gamesPlayed",  "text": "Games Played: ",  "x":130, "y":560, "max":125 },
+        { "alias":"playerWins",   "text": "Player Wins: ",   "x":255, "y":560, "max":125 },
+        { "alias":"enemyWins",    "text": "Enemy Wins: ",    "x":375, "y":560, "max":125 },
+        { "alias":"totalScore",   "text": "Total Score: ",   "x":100, "y":580, "max":125 },
+        { "alias":"levelScore",   "text": "Level Score: ",   "x":280, "y":580, "max":125 }
+    ]
 };
 
 /*
@@ -63,7 +71,6 @@ GameAssets.getWinningRow = function() {
     //console.log("GameAssets.getWinningRow: ", GameAssets.level.winningRow);
     return GameAssets.level.winningRow;
 }
-
 
 GameAssets.getTileWidth = function() {
     //console.log("GameAssets.getTileWidth: ", GameAssets.level.tileWidth);
@@ -141,6 +148,10 @@ GameAssets.getEnemySpeedMax = function(levelId) {
     return GameAssets.levelConfig[GameAssets.getIndexForLevel(levelId)].enemySpeedMax;
 }
 
+GameAssets.getAwardCount = function(levelId) {
+    return GameAssets.levelConfig[GameAssets.getIndexForLevel(levelId)].totalAwards;
+}
+
 /*
  * Character asset access functions.
  */
@@ -173,6 +184,16 @@ GameAssets.getDeltaY = function(alias) {
     }
     return 0;
 }
+
+GameAssets.getCollisionBox = function(alias) {
+
+    var character = this.getCharacter(alias);
+    if (character != null) {
+        return character.collisionBox;
+    }
+    return [0, 0, 0, 0];
+}
+
 
 /*
  * Enemy asset access functions.
@@ -208,3 +229,58 @@ GameAssets.getTile = function(alias) {
     console.log("GameAssets.getTile, Unable to find level tile by alias: ", alias)
     return null;
 }
+
+/*
+ * Meter asset access functions.
+ */
+GameAssets.getMeter = function(alias) {
+
+    for(var asset in GameAssets.meters) {
+        if (GameAssets.meters[asset].alias == alias) {
+            //console.log(GameAssets.meters[asset]);
+            return GameAssets.meters[asset];
+        }
+    }
+    // Log an error to the console.
+    console.log("GameAssets.meters, Unable to find meter by alias: ", alias)
+    return null;
+}
+
+/*
+ * Meter asset access functions.
+ */
+GameAssets.getAward = function(alias) {
+
+    for(var asset in GameAssets.awards) {
+        if (GameAssets.awards[asset].alias == alias) {
+            //console.log(GameAssets.awards[asset]);
+            return GameAssets.awards[asset];
+        }
+    }
+    // Log an error to the console.
+    console.log("GameAssets.meters, Unable to find meter by alias: ", alias)
+    return null;
+}
+
+GameAssets.getAward = function(index) {
+
+    // Return the award specified.
+    if (index < GameAssets.awards.length) {
+        return GameAssets.awards[index];
+    }
+
+    // Log an error to the console.
+    console.log("GameAssets.getAward, Invalid award index: ", index)
+    // return the default.
+    return GameAssets.awards[0];
+}
+
+GameAssets.getTotalAwards = function() {
+    return GameAssets.awards.length;
+}
+
+GameAssets.getAwardPoints = function(levelId) {
+    return GameAssets.levelConfig[GameAssets.getIndexForLevel(levelId)].points;
+}
+
+
